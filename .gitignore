@@ -7,7 +7,8 @@
 /build
 /captures
 .externalNativeBuild
+.idea
 
-app/src/main/java/us/stump/imgurapitest/Constants\.java
+app/src/main/java/com/epicture/aypicture/Constants\.java
 
 aFileChooserModule/build
