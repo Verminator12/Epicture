@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="us.stump.aypicture.ImgurLoginFragment">
+    tools:context="com.epicture.aypicture.ImgurLoginFragment">
 
 
     <WebView
         android:id="@+id/imgur_oauth_webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent"/>
 
 </FrameLayout>

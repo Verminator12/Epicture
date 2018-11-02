@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="us.stump.aypicture"
+    package="com.epicture.aypicture"
     tools:ignore="GoogleAppIndexingWarning">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         android:fullBackupContent="@xml/backup_descriptor">
-        <activity android:name="us.stump.aypicture.MainActivity">
+        <activity android:name="com.epicture.aypicture.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
