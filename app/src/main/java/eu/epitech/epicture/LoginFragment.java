@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 
@@ -31,6 +32,10 @@ public class LoginFragment extends Fragment {
         View mainView = inflater.inflate(R.layout.fragment_login, container, false);
 
         loginWebview = mainView.findViewById(R.id.login_webview);
+
+        WebSettings webSettings = loginWebview.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+
         loginWebview.setWebViewClient(new LoginWebviewClient(this));
         loginWebview.loadUrl(buildWebviewUrl().toString());
         return mainView;
