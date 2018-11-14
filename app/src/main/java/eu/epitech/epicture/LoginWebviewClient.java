@@ -20,7 +20,6 @@ public class LoginWebviewClient extends WebViewClient {
         Uri requestUri = request.getUrl();
 
         if (isCallbackUrl(requestUri)) {
-            Log.v("imgur", "url: " + request.getUrl().toString());
             handleCallbackUrl(view, requestUri);
         }
         return super.shouldOverrideUrlLoading(view, request);
@@ -46,7 +45,7 @@ public class LoginWebviewClient extends WebViewClient {
             token = handledToken;
             view.stopLoading();
             view.loadUrl("about:blank");
-            loginFragment.onImgurTokenReceived(token);
+            loginFragment.OnImgurTokenReceived(token);
         }
     }
 }

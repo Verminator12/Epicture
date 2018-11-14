@@ -1,7 +1,9 @@
 package eu.epitech.epicture;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,14 +16,17 @@ import android.webkit.WebView;
 public class LoginFragment extends Fragment {
     private WebView loginWebview;
     private String IMGUR_AUTH_CALLBACK = "https://api.imgur.com/oauth2/authorize";
-    private String imgurAppCallback = new ImgurAppInfo().getImgurAppCallback();
+    private ImgurAppInfo appInfo = new ImgurAppInfo();
+    private ImgurTokenListener listener;
 
     public String getImgurAppCallback() {
-        return imgurAppCallback;
+        return appInfo.getImgurAppCallback();
     }
 
+    public LoginFragment() {}
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View mainView = inflater.inflate(R.layout.fragment_login, container, false);
 
@@ -31,11 +36,28 @@ public class LoginFragment extends Fragment {
         return mainView;
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof ImgurTokenListener)
+            listener = (ImgurTokenListener) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
+        if (loginWebview != null) {
+            clearHistoryAndCookies();
+            loginWebview.destroy();
+            loginWebview = null;
+        }
+    }
+
     private Uri buildWebviewUrl() {
         Uri.Builder loginUri = Uri.parse(IMGUR_AUTH_CALLBACK).buildUpon();
-        String AppId = new ImgurAppInfo().getImgurAppId();
 
-        loginUri.appendQueryParameter("client_id", AppId);
+        loginUri.appendQueryParameter("client_id", appInfo.getImgurAppId());
         loginUri.appendQueryParameter("response_type", "token");
 
         return loginUri.build();
@@ -49,9 +71,12 @@ public class LoginFragment extends Fragment {
         CookieManager.getInstance().flush();
     }
 
-    public void onImgurTokenReceived(ImgurToken token) {
-        clearHistoryAndCookies();
-        Log.e("imgur", "token received");
-        Log.e("imgur", token.toAuthHeader());
+    public void OnImgurTokenReceived(ImgurToken token) {
+        if (listener != null)
+            listener.OnImgurTokenReceived(token);
+    }
+
+    public interface ImgurTokenListener {
+        void OnImgurTokenReceived(ImgurToken token);
     }
 }

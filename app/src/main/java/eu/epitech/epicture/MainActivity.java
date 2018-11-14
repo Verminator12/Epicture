@@ -17,18 +17,27 @@ import android.view.MenuItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
-public class MainActivity extends AppCompatActivity {
-    String SHARED_TOKEN;
+public class MainActivity extends AppCompatActivity implements
+        LoginButtonFragment.LoginListener,
+        LoginFragment.ImgurTokenListener, GalleryFragment.GalleryListener {
+    private String LOGIN_BUTTON_TAG = "login_button";
+    private String LOGIN_TAG = "login";
+    private String GALLERY_TAG = "gallery";
+    String SHARED_TOKEN = "sharedToken";
+    ImgurToken token = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImgurToken token = getToken();
-        if (token != null) {
-            Log.e("imgur", "token: " + token.toAuthHeader());
+        if (savedInstanceState != null) {
+            return;
         }
+
+        token = getToken();
+        if (token != null)
+            OnImgurTokenReceived(token);
         else
             logout();
     }
@@ -49,15 +58,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void logout() {
-        clearToken();
-        clearBackStack();
-        LoginButtonFragment newFragment = new LoginButtonFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_main, newFragment, "login_button");
-        transaction.commit();
     }
 
     private void saveToken(ImgurToken token) {
@@ -97,5 +97,43 @@ public class MainActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         while (fm.getBackStackEntryCount() != 0)
             fm.popBackStackImmediate();
+    }
+
+    private void logout() {
+        clearToken();
+        clearBackStack();
+
+        LoginButtonFragment newFragment = new LoginButtonFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_main, newFragment, LOGIN_BUTTON_TAG);
+        transaction.commit();
+    }
+
+    @Override
+    public void onLoginButtonClicked() {
+        LoginFragment newFragment = new LoginFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_main, newFragment, LOGIN_TAG);
+        transaction.addToBackStack(LOGIN_TAG);
+        transaction.commit();
+    }
+
+    @Override
+    public void OnImgurTokenReceived(ImgurToken token) {
+        saveToken(token);
+        clearBackStack();
+
+        GalleryFragment newFragment = new GalleryFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_main, newFragment, GALLERY_TAG);
+        transaction.commit();
+    }
+
+    @Override
+    public void onGalleryClicked() {
+        Log.v("imgur", "Gallery clicked"); // TODO remove log
     }
 }
