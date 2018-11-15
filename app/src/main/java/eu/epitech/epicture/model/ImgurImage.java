@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.Date;
 
-public class Image implements Parcelable {
+public class ImgurImage implements Parcelable {
 
     private final String id;
     private final String title;
@@ -138,17 +138,17 @@ public class Image implements Parcelable {
         out.writeInt(in_gallery ? 1 : 0);
     }
 
-    public static final Parcelable.Creator<Image> CREATOR = new Parcelable.Creator<Image>() {
-        public Image createFromParcel(Parcel in) {
-            return new Image(in);
+    public static final Parcelable.Creator<ImgurImage> CREATOR = new Parcelable.Creator<ImgurImage>() {
+        public ImgurImage createFromParcel(Parcel in) {
+            return new ImgurImage(in);
         }
 
-        public Image[] newArray(int size) {
-            return new Image[size];
+        public ImgurImage[] newArray(int size) {
+            return new ImgurImage[size];
         }
     };
 
-    private Image(Parcel in) {
+    private ImgurImage(Parcel in) {
         id = in.readString();
         title = in.readString();
         description = in.readString();

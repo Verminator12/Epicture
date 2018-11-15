@@ -44,14 +44,48 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
+
         inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        MenuItem uploadImage = menu.findItem(R.id.upload_button);
+        MenuItem logoutButton = menu.findItem(R.id.logout_button);
+
+        FragmentManager fm = getSupportFragmentManager();
+        Fragment f;
+
+        if ((f = fm.findFragmentByTag(LOGIN_BUTTON_TAG)) != null && f.isVisible()) {
+            if (uploadImage != null)
+                uploadImage.setVisible(false);
+            if (logoutButton != null)
+                logoutButton.setVisible(false);
+        } else if ((f = fm.findFragmentByTag(LOGIN_TAG)) != null && f.isVisible()) {
+            if (uploadImage != null)
+                uploadImage.setVisible(false);
+            if (logoutButton != null)
+                logoutButton.setVisible(false);
+        } else if ((f = fm.findFragmentByTag(GALLERY_TAG)) != null && f.isVisible()) {
+            if (uploadImage != null)
+                uploadImage.setVisible(true);
+            if (logoutButton != null)
+                logoutButton.setVisible(true);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.upload_button:
+                uploadImage();
+                return true;
             case R.id.logout_button:
                 logout();
                 return true;
@@ -97,6 +131,10 @@ public class MainActivity extends AppCompatActivity implements
         FragmentManager fm = getSupportFragmentManager();
         while (fm.getBackStackEntryCount() != 0)
             fm.popBackStackImmediate();
+    }
+
+    private void uploadImage() {
+        // TODO grab image
     }
 
     private void logout() {

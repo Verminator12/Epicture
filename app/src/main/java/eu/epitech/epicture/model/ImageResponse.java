@@ -4,9 +4,9 @@ import java.util.List;
 
 public class ImageResponse extends BasicResponse {
 
-    private List<Image> data;
+    private List<ImgurImage> data;
 
-    public List<Image> getData() {
+    public List<ImgurImage> getData() {
         return  data;
     }
 }

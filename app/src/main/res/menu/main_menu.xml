@@ -3,6 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/upload_button"
+        android:title="@string/upload_text"
+        app:showAsAction="ifRoom"
+        />
+    <item
         android:id="@+id/logout_button"
         android:title="@string/logout_text"
         app:showAsAction="ifRoom" />

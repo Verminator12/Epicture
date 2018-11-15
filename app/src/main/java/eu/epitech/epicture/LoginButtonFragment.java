@@ -54,6 +54,12 @@ public class LoginButtonFragment extends Fragment implements View.OnClickListene
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().invalidateOptionsMenu();
+    }
+
     public void onButtonPressed() {
         if (listener != null)
             listener.onLoginButtonClicked();

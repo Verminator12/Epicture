@@ -16,9 +16,15 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import eu.epitech.epicture.model.ImgurImage;
+
 public class ImageAdapter extends BaseAdapter {
     private LayoutInflater inflater;
-    Context context;
+    private Context context;
+    private List<ImgurImage> images = new ArrayList<>();
     private String[] IMAGE_URLS = Constants.IMAGES; // TODO change with ImgurImage
 
     ImageAdapter (Context context) {
@@ -28,12 +34,12 @@ public class ImageAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return IMAGE_URLS.length;
+        return images.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return IMAGE_URLS[position];
+        return images.get(position);
     }
 
     @Override
@@ -56,7 +62,7 @@ public class ImageAdapter extends BaseAdapter {
             holder = (ViewHolder) view.getTag();
         }
         Glide.with(context)
-                .load(IMAGE_URLS[position])
+                .load(images.get(position).getLink())
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
