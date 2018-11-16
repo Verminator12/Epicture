@@ -183,11 +183,7 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 BasicResponse body = response.body();
-                Log.v("imgur", "API CALL SUCCESSFUL");
                 if (response.isSuccessful() && body != null && body.getSuccess()) {
-                    Log.v("imgur", "Upload was a success");
-
-                    // tell the image gallery to refresh, which will load the new image
                     GalleryFragment gallery = (GalleryFragment) getSupportFragmentManager().findFragmentByTag(GALLERY_TAG);
                     if (gallery != null) {
                         gallery.refreshList();

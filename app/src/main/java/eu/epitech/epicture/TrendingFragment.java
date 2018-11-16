@@ -22,6 +22,7 @@ import retrofit2.Response;
 
 public class TrendingFragment extends Fragment {
     private static final String SORT_OPTION = "top";
+    private static final String QUERY = "code";
     private GridView gallery_grid;
     private SearchView gallery_search;
     private List<ImgurImage> images = null;
@@ -55,7 +56,6 @@ public class TrendingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 gallery_search.setIconified(false);
-                gallery_search.setActivated(true);
             }
         });
         gallery_search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -77,8 +77,7 @@ public class TrendingFragment extends Fragment {
         Bundle args = getArguments();
         if (args != null)
             this.accessToken = args.getString("accessToken");
-        for (Integer i = 0; i < 5; i++)
-            loadTrending(i.toString(), "");
+        loadTrending("0", QUERY);
     }
 
     @Override
@@ -113,8 +112,7 @@ public class TrendingFragment extends Fragment {
                     }
             });
         }
-        for (Integer i = 0; i < 5; i++)
-            loadTrending(i.toString(), "");
+        loadTrending("0", QUERY);
     }
 
     private void loadTrending(String page, String query) {
