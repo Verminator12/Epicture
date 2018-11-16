@@ -5,8 +5,11 @@
     <item
         android:id="@+id/upload_button"
         android:title="@string/upload_text"
-        app:showAsAction="ifRoom"
-        />
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/trending_button"
+        android:title="@string/trending_text"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/logout_button"
         android:title="@string/logout_text"

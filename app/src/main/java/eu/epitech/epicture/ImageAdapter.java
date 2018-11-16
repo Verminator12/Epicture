@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
@@ -58,11 +59,14 @@ public class ImageAdapter extends BaseAdapter {
             holder.imageView = view.findViewById(R.id.item_image);
             holder.progressBar = view.findViewById(R.id.progress_bar);
             view.setTag(holder);
-        } else {
+        } else
             holder = (ViewHolder) view.getTag();
-        }
+        ImgurImage item = images.get(position);
+        String link;
+        //link = "https://i.imgur.com/" + item.getId() + "m.jpg"; // TODO remove line
+        link = item.getLink();
         Glide.with(context)
-                .load(images.get(position).getLink())
+                .load(link)
                 .listener(new RequestListener<Drawable>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -82,6 +86,9 @@ public class ImageAdapter extends BaseAdapter {
 
     public void setItemsAndNotify(List<ImgurImage> images) {
         this.images = images;
+        for (int i = 0; i < images.size(); i++ )
+            if (images.get(i).getMp4_size() != null)
+                images.remove(i);
         notifyDataSetChanged();
     }
 

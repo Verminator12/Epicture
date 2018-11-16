@@ -1,35 +1,31 @@
 package eu.epitech.epicture.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.Date;
 
-public class ImgurImage implements Parcelable {
-
-    private final String id;
-    private final String title;
-    private final String description;
-    private final Integer datetime;
-    private final String type;
-    private final Boolean animated;
-    private final Integer width;
-    private final Integer height;
-    private final Integer size;
-    private final Integer views;
-    private final Double bandwidth;
-    private final String deletehash;
-    private final String name;
-    private final String section;
-    private final String link;
-    private final String gifv;
-    private final String mp4;
-    private final Integer mp4_size;
-    private final Boolean looping;
-    private final Boolean favorite;
-    private final Boolean nsfw;
-    private final String vote;
-    private final Boolean in_gallery;
+public class ImgurImage {
+    private String id;
+    private String title;
+    private String description;
+    private Integer datetime;
+    private String type;
+    private Boolean animated;
+    private Integer width;
+    private Integer height;
+    private Integer size;
+    private Integer views;
+    private Double bandwidth;
+    private String deletehash;
+    private String name;
+    private String section;
+    private String link;
+    private String gifv;
+    private String mp4;
+    private Integer mp4_size;
+    private Boolean looping;
+    private Boolean favorite;
+    private Boolean nsfw;
+    private String vote;
+    private Boolean in_gallery;
 
 
     public String getId() {
@@ -105,72 +101,5 @@ public class ImgurImage implements Parcelable {
     }
     public Boolean getIn_gallery() {
         return in_gallery;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public void writeToParcel(Parcel out, int flags) {
-        out.writeString(id);
-        out.writeString(title);
-        out.writeString(description);
-        out.writeInt(datetime);
-        out.writeString(type);
-        out.writeInt(animated ? 1 : 0);
-        out.writeInt(width);
-        out.writeInt(height);
-        out.writeInt(size);
-        out.writeInt(views);
-        out.writeDouble(bandwidth);
-        out.writeString(deletehash);
-        out.writeString(name);
-        out.writeString(section);
-        out.writeString(link);
-        out.writeString(gifv);
-        out.writeString(mp4);
-        out.writeInt(mp4_size);
-        out.writeInt(looping ? 1 : 0);
-        out.writeInt(favorite ? 1 : 0);
-        out.writeInt(nsfw ? 1 : 0);
-        out.writeString(vote);
-        out.writeInt(in_gallery ? 1 : 0);
-    }
-
-    public static final Parcelable.Creator<ImgurImage> CREATOR = new Parcelable.Creator<ImgurImage>() {
-        public ImgurImage createFromParcel(Parcel in) {
-            return new ImgurImage(in);
-        }
-
-        public ImgurImage[] newArray(int size) {
-            return new ImgurImage[size];
-        }
-    };
-
-    private ImgurImage(Parcel in) {
-        id = in.readString();
-        title = in.readString();
-        description = in.readString();
-        datetime = in.readInt();
-        type = in.readString();
-        animated = (in.readInt() == 1);
-        width = in.readInt();
-        height = in.readInt();
-        size = in.readInt();
-        views = in.readInt();
-        bandwidth = in.readDouble();
-        deletehash = in.readString();
-        name = in.readString();
-        section = in.readString();
-        link = in.readString();
-        gifv = in.readString();
-        mp4 = in.readString();
-        mp4_size = in.readInt();
-        looping = (in.readInt() == 1);
-        favorite = (in.readInt() == 1);
-        nsfw = (in.readInt() == 1);
-        vote = in.readString();
-        in_gallery = (in.readInt() == 1);
     }
 }

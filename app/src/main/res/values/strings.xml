@@ -3,4 +3,5 @@
     <string name="login_button_text">Login</string>
     <string name="logout_text">Logout</string>
     <string name="upload_text">Upload</string>
+    <string name="trending_text">Trending</string>
 </resources>

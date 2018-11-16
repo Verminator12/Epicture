@@ -3,7 +3,6 @@ package eu.epitech.epicture;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,8 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
 import eu.epitech.epicture.model.BasicResponse;
 import okhttp3.MediaType;
@@ -31,18 +28,18 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Header;
-import retrofit2.http.Part;
 
 public class MainActivity extends AppCompatActivity implements
         LoginButtonFragment.LoginListener,
-        LoginFragment.ImgurTokenListener, GalleryFragment.GalleryListener {
-    private String LOGIN_BUTTON_TAG = "login_button";
-    private String LOGIN_TAG = "login";
-    private String GALLERY_TAG = "gallery";
+        LoginFragment.ImgurTokenListener,
+        GalleryFragment.GalleryListener,
+        TrendingFragment.GalleryListener {
+    private static final String TRENDING_TAG = "trending_button";
+    private static final String LOGIN_BUTTON_TAG = "login_button";
+    private static final String LOGIN_TAG = "login";
+    private static final String GALLERY_TAG = "gallery";
     private String SHARED_TOKEN = "sharedToken";
     private Integer PICK_IMAGE = 1;
-    private ImgurToken token = null;
     private ApiInterface client = null;
 
     @Override
@@ -50,11 +47,9 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null)
             return;
-        }
-
-        token = getToken();
+        ImgurToken token = getToken();
         if (token != null)
             OnImgurTokenReceived(token);
         else
@@ -105,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.upload_button:
                 pickImage();
                 return true;
+            case R.id.trending_button:
+                showTrendings();
+                return true;
             case R.id.logout_button:
                 logout();
                 return true;
@@ -118,7 +116,6 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
-            Log.v("imgur", "Received image: "+ uri.toString());
             uploadImage(uri);
         }
 
@@ -171,12 +168,16 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void uploadImage(Uri uri) {
-        Log.v("imgur", "uploadFile: fileuri = "+ uri.toString());
+        ImgurToken token = getToken();
 
+        if (token == null)
+            logout();
         createImgurClient();
         File file = new File(uri.getPath());
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+        Log.v("imgur", "uploadFile: uri = "+ uri.getPath()); // TODO remove log
+        Log.v("imgur", "uploadFile: file name = "+ file.getName()); // TODO remove log
         Call<BasicResponse> call = client.uploadImage(token.toAuthHeader(), body);
         call.enqueue(new Callback<BasicResponse>() {
             @Override
@@ -198,6 +199,19 @@ public class MainActivity extends AppCompatActivity implements
             public void onFailure(Call<BasicResponse> call, Throwable t) {
             }
         });
+    }
+
+    private void showTrendings() {
+        ImgurToken token = getToken();
+
+        if (token == null)
+            logout();
+        TrendingFragment newFragment = TrendingFragment.newInstance(token.toAuthHeader());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_main, newFragment, TRENDING_TAG);
+        transaction.addToBackStack(TRENDING_TAG);
+        transaction.commit();
     }
 
     private void createImgurClient()
