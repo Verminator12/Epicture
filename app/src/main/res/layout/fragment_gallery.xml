@@ -9,6 +9,6 @@
     android:id="@+id/gallery_grid"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:numColumns="auto_fit"/>
+    android:numColumns="1"/>
 
 </FrameLayout>

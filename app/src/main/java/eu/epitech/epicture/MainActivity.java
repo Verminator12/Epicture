@@ -1,8 +1,11 @@
 package eu.epitech.epicture;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.preference.Preference;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,14 +20,30 @@ import android.view.MenuItem;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import eu.epitech.epicture.model.BasicResponse;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.http.Header;
+import retrofit2.http.Part;
+
 public class MainActivity extends AppCompatActivity implements
         LoginButtonFragment.LoginListener,
         LoginFragment.ImgurTokenListener, GalleryFragment.GalleryListener {
     private String LOGIN_BUTTON_TAG = "login_button";
     private String LOGIN_TAG = "login";
     private String GALLERY_TAG = "gallery";
-    String SHARED_TOKEN = "sharedToken";
-    ImgurToken token = null;
+    private String SHARED_TOKEN = "sharedToken";
+    private Integer PICK_IMAGE = 1;
+    private ImgurToken token = null;
+    private ApiInterface client = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.upload_button:
-                uploadImage();
+                pickImage();
                 return true;
             case R.id.logout_button:
                 logout();
@@ -92,6 +111,17 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            Uri uri = data.getData();
+            Log.v("imgur", "Received image: "+ uri.toString());
+            uploadImage(uri);
+        }
+
     }
 
     private void saveToken(ImgurToken token) {
@@ -133,8 +163,47 @@ public class MainActivity extends AppCompatActivity implements
             fm.popBackStackImmediate();
     }
 
-    private void uploadImage() {
-        // TODO grab image
+    private void pickImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Choose image"), PICK_IMAGE);
+    }
+
+    private void uploadImage(Uri uri) {
+        Log.v("imgur", "uploadFile: fileuri = "+ uri.toString());
+
+        createImgurClient();
+        File file = new File(uri.getPath());
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+        Call<BasicResponse> call = client.uploadImage(token.toAuthHeader(), body);
+        call.enqueue(new Callback<BasicResponse>() {
+            @Override
+            public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
+                BasicResponse body = response.body();
+                Log.v("imgur", "API CALL SUCCESSFUL");
+                if (response.isSuccessful() && body != null && body.getSuccess()) {
+                    Log.v("imgur", "Upload was a success");
+
+                    // tell the image gallery to refresh, which will load the new image
+                    GalleryFragment gallery = (GalleryFragment) getSupportFragmentManager().findFragmentByTag(GALLERY_TAG);
+                    if (gallery != null) {
+                        gallery.refreshList();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BasicResponse> call, Throwable t) {
+            }
+        });
+    }
+
+    private void createImgurClient()
+    {
+        if (client == null)
+            client = ApiClient.getClient().create(ApiInterface.class);
     }
 
     private void logout() {
@@ -163,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements
         saveToken(token);
         clearBackStack();
 
-        GalleryFragment newFragment = new GalleryFragment();
+        GalleryFragment newFragment = GalleryFragment.newInstance(token.toAuthHeader());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_main, newFragment, GALLERY_TAG);

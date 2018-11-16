@@ -3,6 +3,7 @@ package eu.epitech.epicture;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,6 @@ public class ImageAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private Context context;
     private List<ImgurImage> images = new ArrayList<>();
-    private String[] IMAGE_URLS = Constants.IMAGES; // TODO change with ImgurImage
 
     ImageAdapter (Context context) {
         inflater = LayoutInflater.from(context);
@@ -78,6 +78,11 @@ public class ImageAdapter extends BaseAdapter {
                 })
                 .into(holder.imageView);
         return view;
+    }
+
+    public void setItemsAndNotify(List<ImgurImage> images) {
+        this.images = images;
+        notifyDataSetChanged();
     }
 
     static class ViewHolder {
