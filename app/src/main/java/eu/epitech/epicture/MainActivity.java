@@ -71,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements
 
         MenuItem uploadImage = menu.findItem(R.id.upload_button);
         MenuItem logoutButton = menu.findItem(R.id.logout_button);
+        MenuItem homeButton = menu.findItem(R.id.home_button);
+        MenuItem trendingButton = menu.findItem(R.id.trending_button);
+        MenuItem favoriteButton = menu.findItem(R.id.favorite_button);
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment f;
@@ -80,16 +83,34 @@ public class MainActivity extends AppCompatActivity implements
                 uploadImage.setVisible(false);
             if (logoutButton != null)
                 logoutButton.setVisible(false);
+            if (homeButton != null)
+                homeButton.setVisible(false);
+            if (trendingButton != null)
+                trendingButton.setVisible(false);
+            if (favoriteButton != null)
+                favoriteButton.setVisible(false);
         } else if ((f = fm.findFragmentByTag(LOGIN_TAG)) != null && f.isVisible()) {
             if (uploadImage != null)
                 uploadImage.setVisible(false);
             if (logoutButton != null)
                 logoutButton.setVisible(false);
+            if (homeButton != null)
+                homeButton.setVisible(false);
+            if (trendingButton != null)
+                trendingButton.setVisible(false);
+            if (favoriteButton != null)
+                favoriteButton.setVisible(false);
         } else if ((f = fm.findFragmentByTag(GALLERY_TAG)) != null && f.isVisible()) {
             if (uploadImage != null)
                 uploadImage.setVisible(true);
             if (logoutButton != null)
                 logoutButton.setVisible(true);
+            if (homeButton != null)
+                homeButton.setVisible(true);
+            if (trendingButton != null)
+                trendingButton.setVisible(true);
+            if (favoriteButton != null)
+                favoriteButton.setVisible(true);
         }
         return true;
     }
@@ -105,6 +126,12 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
             case R.id.logout_button:
                 logout();
+                return true;
+            case R.id.home_button:
+                home();
+                return true;
+            case R.id.favorite_button:
+                favorite();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -195,6 +222,21 @@ public class MainActivity extends AppCompatActivity implements
             public void onFailure(Call<BasicResponse> call, Throwable t) {
             }
         });
+    }
+
+    private void home() {
+        ImgurToken token = getToken();
+
+        GalleryFragment newFragment = GalleryFragment.newInstance(token.toAuthHeader());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_main, newFragment, GALLERY_TAG);
+        transaction.commit();
+        //TODO SHOW GALLERY OF USER
+    }
+
+    private void favorite() {
+        //TODO SHOW FAVORITE OF USER
     }
 
     private void showTrendings() {
