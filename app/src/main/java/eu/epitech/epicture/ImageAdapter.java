@@ -62,9 +62,7 @@ public class ImageAdapter extends BaseAdapter {
         } else
             holder = (ViewHolder) view.getTag();
         ImgurImage item = images.get(position);
-        String link;
-        //link = "https://i.imgur.com/" + item.getId() + "m.jpg"; // TODO remove line
-        link = item.getLink();
+        String link = item.getLink();
         Glide.with(context)
                 .load(link)
                 .listener(new RequestListener<Drawable>() {

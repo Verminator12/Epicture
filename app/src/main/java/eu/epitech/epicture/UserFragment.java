@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.util.List;
@@ -18,18 +20,19 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class GalleryFragment extends Fragment {
+public class UserFragment extends Fragment {
     private GridView gallery_grid;
     private List<ImgurImage> images = null;
     private ApiInterface client = null;
     private String accessToken = "accessToken";
     private GalleryListener listener;
+    private ImgurImage item;
 
-    public GalleryFragment() {}
+    public UserFragment() {}
 
-    public static GalleryFragment newInstance(String accessToken) {
+    public static UserFragment newInstance(String accessToken) {
         Bundle args = new Bundle();
-        GalleryFragment fragment = new GalleryFragment();
+        UserFragment fragment = new UserFragment();
 
         args.putString("accessToken", accessToken);
         fragment.setArguments(args);
@@ -50,6 +53,17 @@ public class GalleryFragment extends Fragment {
         gallery_search.setVisibility(View.GONE);
         gallery_grid = getActivity().findViewById(R.id.gallery_grid);
         gallery_grid.setAdapter(new ImageAdapter(getContext()));
+        gallery_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                item = (ImgurImage) gallery_grid.getAdapter().getItem(position);
+                Log.v("imgur", "GALLERY");
+                Log.v("imgur", "link: " + item.getLink());
+                Log.v("imgur", "id: " + item.getId());
+                Log.v("imgur", "hash: " + item.getDeletehash());
+                listener.onGalleryClicked(item);
+            }
+        });
         Bundle args = getArguments();
         if (args != null)
             this.accessToken = args.getString("accessToken");
@@ -111,7 +125,6 @@ public class GalleryFragment extends Fragment {
                                             adapter.setItemsAndNotify(images);
                                         }
                                     });
-
                                 }
                             }
                         } else {
@@ -144,6 +157,6 @@ public class GalleryFragment extends Fragment {
     }
 
     public interface GalleryListener {
-        void onGalleryClicked();
+        void onGalleryClicked(ImgurImage image);
     }
 }

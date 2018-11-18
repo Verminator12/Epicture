@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SearchView;
 
@@ -52,6 +54,14 @@ public class FavoriteFragment extends Fragment {
         gallery_search.setVisibility(View.GONE);
         gallery_grid = getActivity().findViewById(R.id.gallery_grid);
         gallery_grid.setAdapter(new ImageAdapter(getContext()));
+        gallery_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ImgurImage item = (ImgurImage) gallery_grid.getAdapter().getItem(position);
+                listener.onGalleryClicked(item);
+            }
+        });
+
         Bundle args = getArguments();
         if (args != null)
             this.accessToken = args.getString("accessToken");
@@ -138,8 +148,6 @@ public class FavoriteFragment extends Fragment {
         }
     }
 
-
-
     private void createImgurClient()
     {
         if (client == null)
@@ -147,6 +155,6 @@ public class FavoriteFragment extends Fragment {
     }
 
     public interface GalleryListener {
-        void onGalleryClicked();
+        void onGalleryClicked(ImgurImage image);
     }
 }

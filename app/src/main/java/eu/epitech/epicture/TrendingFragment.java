@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.SearchView;
 
@@ -74,6 +76,13 @@ public class TrendingFragment extends Fragment {
 
         gallery_grid = getActivity().findViewById(R.id.gallery_grid);
         gallery_grid.setAdapter(new ImageAdapter(getContext()));
+        gallery_grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ImgurImage item = (ImgurImage) gallery_grid.getAdapter().getItem(position);
+                listener.onGalleryClicked(item);
+            }
+        });
         Bundle args = getArguments();
         if (args != null)
             this.accessToken = args.getString("accessToken");
@@ -99,20 +108,6 @@ public class TrendingFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getActivity().invalidateOptionsMenu();
-    }
-
-    public void refreshList() {
-        images = null;
-        final ImageAdapter adapter = (ImageAdapter) gallery_grid.getAdapter();
-        if (adapter != null) {
-            gallery_grid.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-            });
-        }
-        loadTrending("0", QUERY);
     }
 
     private void loadTrending(String page, String query) {
@@ -160,8 +155,6 @@ public class TrendingFragment extends Fragment {
         }
     }
 
-
-
     private void createImgurClient()
     {
         if (client == null)
@@ -169,6 +162,6 @@ public class TrendingFragment extends Fragment {
     }
 
     public interface GalleryListener {
-        void onGalleryClicked();
+        void onGalleryClicked(ImgurImage image);
     }
 }

@@ -25,6 +25,14 @@ public interface ApiInterface {
     @GET("account/me/favorites")
     Call<ImageResponse> favoriteGallery(@Header("Authorization") String Authorization);
 
+    @POST("image/{id}/favorite")
+    Call<BasicResponse> favoriteImage(@Header("Authorization") String Authorization,
+                                      @Path("id") String id);
+
+    @POST("image/{deleteHash}")
+    Call<BasicResponse> deleteImage(@Header("Authorization") String Authorization,
+                                    @Path("deleteHash") String deleteHash);
+
     @Multipart
     @POST("image")
     Call<BasicResponse> uploadImage(@Header("Authorization") String Authorization,

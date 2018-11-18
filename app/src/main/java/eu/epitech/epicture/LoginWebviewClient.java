@@ -8,8 +8,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class LoginWebviewClient extends WebViewClient {
-    private LoginFragment   loginFragment;
-    private ImgurToken      token;
+    private LoginFragment loginFragment;
+    private ImgurToken token;
 
     LoginWebviewClient (LoginFragment loginFragment) {
         this.loginFragment = loginFragment;

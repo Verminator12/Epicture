@@ -10,13 +10,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -24,6 +22,7 @@ import com.google.gson.JsonSyntaxException;
 import java.io.File;
 
 import eu.epitech.epicture.model.BasicResponse;
+import eu.epitech.epicture.model.ImgurImage;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -34,14 +33,16 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements
         LoginButtonFragment.LoginListener,
         LoginFragment.ImgurTokenListener,
-        GalleryFragment.GalleryListener,
+        UserFragment.GalleryListener,
         TrendingFragment.GalleryListener,
-        FavoriteFragment.GalleryListener {
+        FavoriteFragment.GalleryListener,
+        FullscreenFragment.onDeleteListener {
     private static final String TRENDING_TAG = "trending";
     private static final String LOGIN_BUTTON_TAG = "login_button";
     private static final String LOGIN_TAG = "login";
     private static final String USER_TAG = "user";
     private static final String FAVORITE_TAG = "favorite";
+    private static final String FULLSCREEN_TAG = "fullscreen";
     private String SHARED_TOKEN = "sharedToken";
     private Integer PICK_IMAGE = 1;
     private ApiInterface client = null;
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 BasicResponse body = response.body();
                 if (response.isSuccessful() && body != null && body.getSuccess()) {
-                    GalleryFragment gallery = (GalleryFragment) getSupportFragmentManager().findFragmentByTag(USER_TAG);
+                    UserFragment gallery = (UserFragment) getSupportFragmentManager().findFragmentByTag(USER_TAG);
                     if (gallery != null) {
                         gallery.refreshList();
                     }
@@ -233,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements
 
         if (token == null)
             logout();
-        GalleryFragment newFragment = GalleryFragment.newInstance(token.toAuthHeader());
+        UserFragment newFragment = UserFragment.newInstance(token.toAuthHeader());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         transaction.replace(R.id.fragment_main, newFragment, USER_TAG);
@@ -302,7 +303,23 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onGalleryClicked() {
-        Log.v("imgur", "Gallery clicked"); // TODO remove log
+    public void onGalleryClicked(ImgurImage image) {
+        ImgurToken token = getToken();
+
+        if (token == null)
+            logout();
+        FullscreenFragment newFragment = FullscreenFragment.newInstance(token.toAuthHeader(), image.getLink(),
+                                                                        image.getId(), image.getDeletehash());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_main, newFragment, FULLSCREEN_TAG);
+        transaction.addToBackStack(FULLSCREEN_TAG);
+        transaction.commit();
+    }
+
+    @Override
+    public void onDeletedImage() {
+        FragmentManager fm = getSupportFragmentManager();
+        fm.popBackStack();
     }
 }
