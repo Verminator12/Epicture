@@ -22,6 +22,8 @@ public interface ApiInterface {
                                         @Path("page") String page,
                                         @Query("q_type") String q_type,
                                         @Query("q") String q);
+    @GET("account/me/favorites")
+    Call<ImageResponse> favoriteGallery(@Header("Authorization") String Authorization);
 
     @Multipart
     @POST("image")

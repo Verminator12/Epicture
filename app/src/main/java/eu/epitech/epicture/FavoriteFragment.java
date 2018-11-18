@@ -2,6 +2,7 @@ package eu.epitech.epicture;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,21 +20,18 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class TrendingFragment extends Fragment {
-    private static final String SORT_OPTION = "top";
-    private static final String QUERY = "code";
+public class FavoriteFragment extends Fragment {
     private GridView gallery_grid;
-    private SearchView gallery_search;
     private List<ImgurImage> images = null;
     private ApiInterface client = null;
     private String accessToken = "accessToken";
     private GalleryListener listener;
 
-    public TrendingFragment() {}
+    public FavoriteFragment() {}
 
-    public static TrendingFragment newInstance(String accessToken) {
+    public static FavoriteFragment newInstance(String accessToken) {
         Bundle args = new Bundle();
-        TrendingFragment fragment = new TrendingFragment();
+        FavoriteFragment fragment = new FavoriteFragment();
 
         args.putString("accessToken", accessToken);
         fragment.setArguments(args);
@@ -41,7 +39,7 @@ public class TrendingFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_gallery, container, false);
     }
@@ -50,34 +48,14 @@ public class TrendingFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        gallery_search = getActivity().findViewById(R.id.gallery_search);
-        gallery_search.setVisibility(View.VISIBLE);
-        gallery_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gallery_search.setIconified(false);
-            }
-        });
-        gallery_search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                images.clear();
-                loadTrending("0", query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
+        SearchView gallery_search = getActivity().findViewById(R.id.gallery_search);
+        gallery_search.setVisibility(View.GONE);
         gallery_grid = getActivity().findViewById(R.id.gallery_grid);
         gallery_grid.setAdapter(new ImageAdapter(getContext()));
         Bundle args = getArguments();
         if (args != null)
             this.accessToken = args.getString("accessToken");
-        loadTrending("0", QUERY);
+        loadFavorite();
     }
 
     @Override
@@ -112,13 +90,13 @@ public class TrendingFragment extends Fragment {
                     }
             });
         }
-        loadTrending("0", QUERY);
+        loadFavorite();
     }
 
-    private void loadTrending(String page, String query) {
+    private void loadFavorite() {
         if (images == null || images.isEmpty()) {
             createImgurClient();
-            Call<ImageResponse> call = client.trendingGallery(accessToken, SORT_OPTION, page, "jpg", query);
+            Call<ImageResponse> call = client.favoriteGallery(accessToken);
             call.enqueue(new Callback<ImageResponse>() {
                     @Override
                     public void onResponse(Call<ImageResponse> call, Response<ImageResponse> response) {

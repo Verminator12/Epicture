@@ -46,6 +46,8 @@ public class GalleryFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        android.widget.SearchView gallery_search = getActivity().findViewById(R.id.gallery_search);
+        gallery_search.setVisibility(View.GONE);
         gallery_grid = getActivity().findViewById(R.id.gallery_grid);
         gallery_grid.setAdapter(new ImageAdapter(getContext()));
         Bundle args = getArguments();

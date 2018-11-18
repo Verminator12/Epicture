@@ -10,11 +10,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -33,11 +35,13 @@ public class MainActivity extends AppCompatActivity implements
         LoginButtonFragment.LoginListener,
         LoginFragment.ImgurTokenListener,
         GalleryFragment.GalleryListener,
-        TrendingFragment.GalleryListener {
-    private static final String TRENDING_TAG = "trending_button";
+        TrendingFragment.GalleryListener,
+        FavoriteFragment.GalleryListener {
+    private static final String TRENDING_TAG = "trending";
     private static final String LOGIN_BUTTON_TAG = "login_button";
     private static final String LOGIN_TAG = "login";
-    private static final String GALLERY_TAG = "gallery";
+    private static final String USER_TAG = "user";
+    private static final String FAVORITE_TAG = "favorite";
     private String SHARED_TOKEN = "sharedToken";
     private Integer PICK_IMAGE = 1;
     private ApiInterface client = null;
@@ -100,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements
                 trendingButton.setVisible(false);
             if (favoriteButton != null)
                 favoriteButton.setVisible(false);
-        } else if ((f = fm.findFragmentByTag(GALLERY_TAG)) != null && f.isVisible()) {
+        } else if ((f = fm.findFragmentByTag(USER_TAG)) != null && f.isVisible()) {
             if (uploadImage != null)
                 uploadImage.setVisible(true);
             if (logoutButton != null)
@@ -122,16 +126,16 @@ public class MainActivity extends AppCompatActivity implements
                 pickImage();
                 return true;
             case R.id.trending_button:
-                showTrendings();
+                showTrending();
                 return true;
             case R.id.logout_button:
                 logout();
                 return true;
             case R.id.home_button:
-                home();
+                showHome();
                 return true;
             case R.id.favorite_button:
-                favorite();
+                showFavorite();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -211,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 BasicResponse body = response.body();
                 if (response.isSuccessful() && body != null && body.getSuccess()) {
-                    GalleryFragment gallery = (GalleryFragment) getSupportFragmentManager().findFragmentByTag(GALLERY_TAG);
+                    GalleryFragment gallery = (GalleryFragment) getSupportFragmentManager().findFragmentByTag(USER_TAG);
                     if (gallery != null) {
                         gallery.refreshList();
                     }
@@ -224,22 +228,33 @@ public class MainActivity extends AppCompatActivity implements
         });
     }
 
-    private void home() {
+    private void showHome() {
         ImgurToken token = getToken();
 
+        if (token == null)
+            logout();
         GalleryFragment newFragment = GalleryFragment.newInstance(token.toAuthHeader());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        transaction.replace(R.id.fragment_main, newFragment, GALLERY_TAG);
+        transaction.replace(R.id.fragment_main, newFragment, USER_TAG);
+        transaction.addToBackStack(USER_TAG);
         transaction.commit();
-        //TODO SHOW GALLERY OF USER
     }
 
-    private void favorite() {
-        //TODO SHOW FAVORITE OF USER
+    private void showFavorite() {
+        ImgurToken token = getToken();
+
+        if (token == null)
+            logout();
+        FavoriteFragment newFragment = FavoriteFragment.newInstance(token.toAuthHeader());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        transaction.replace(R.id.fragment_main, newFragment, FAVORITE_TAG);
+        transaction.addToBackStack(FAVORITE_TAG);
+        transaction.commit();
     }
 
-    private void showTrendings() {
+    private void showTrending() {
         ImgurToken token = getToken();
 
         if (token == null)
@@ -250,12 +265,6 @@ public class MainActivity extends AppCompatActivity implements
         transaction.replace(R.id.fragment_main, newFragment, TRENDING_TAG);
         transaction.addToBackStack(TRENDING_TAG);
         transaction.commit();
-    }
-
-    private void createImgurClient()
-    {
-        if (client == null)
-            client = ApiClient.getClient().create(ApiInterface.class);
     }
 
     private void logout() {
@@ -283,12 +292,13 @@ public class MainActivity extends AppCompatActivity implements
     public void OnImgurTokenReceived(ImgurToken token) {
         saveToken(token);
         clearBackStack();
+        showHome();
+    }
 
-        GalleryFragment newFragment = GalleryFragment.newInstance(token.toAuthHeader());
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-        transaction.replace(R.id.fragment_main, newFragment, GALLERY_TAG);
-        transaction.commit();
+    private void createImgurClient()
+    {
+        if (client == null)
+            client = ApiClient.getClient().create(ApiInterface.class);
     }
 
     @Override

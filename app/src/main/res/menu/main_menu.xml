@@ -11,21 +11,21 @@
         android:id="@+id/upload_button"
         android:icon="@drawable/ic_file_upload_white_48dp"
         android:title="@string/upload_text"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/trending_button"
         android:icon="@drawable/ic_trending_up_white_48dp"
         android:title="@string/trending_text"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/favorite_button"
         android:icon="@drawable/ic_favorite_white_48dp"
         android:title="@string/favorite_text"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/logout_button"
         android:icon="@drawable/ic_logout_white_48dp"
         android:title="@string/logout_text"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
 
 </menu>
