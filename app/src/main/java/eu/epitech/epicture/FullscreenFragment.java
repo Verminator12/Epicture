@@ -118,13 +118,6 @@ public class FullscreenFragment extends Fragment {
         call.enqueue(new Callback<BasicResponse>() {
             @Override
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
-                BasicResponse body = response.body();
-                if (response.isSuccessful() && body != null && body.getSuccess()) {
-                    FavoriteFragment gallery = (FavoriteFragment) getActivity().getSupportFragmentManager().findFragmentByTag("favorite");
-                    if (gallery != null) {
-                        gallery.refreshList();
-                    }
-                }
             }
 
             @Override
