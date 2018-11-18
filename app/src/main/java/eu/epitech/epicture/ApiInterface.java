@@ -4,6 +4,7 @@ import eu.epitech.epicture.model.BasicResponse;
 import eu.epitech.epicture.model.ImageResponse;
 import okhttp3.MultipartBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -29,7 +30,7 @@ public interface ApiInterface {
     Call<BasicResponse> favoriteImage(@Header("Authorization") String Authorization,
                                       @Path("id") String id);
 
-    @POST("image/{deleteHash}")
+    @DELETE("image/{deleteHash}")
     Call<BasicResponse> deleteImage(@Header("Authorization") String Authorization,
                                     @Path("deleteHash") String deleteHash);
 

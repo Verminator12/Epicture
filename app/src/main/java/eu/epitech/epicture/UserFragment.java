@@ -57,10 +57,6 @@ public class UserFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 item = (ImgurImage) gallery_grid.getAdapter().getItem(position);
-                Log.v("imgur", "GALLERY");
-                Log.v("imgur", "link: " + item.getLink());
-                Log.v("imgur", "id: " + item.getId());
-                Log.v("imgur", "hash: " + item.getDeletehash());
                 listener.onGalleryClicked(item);
             }
         });

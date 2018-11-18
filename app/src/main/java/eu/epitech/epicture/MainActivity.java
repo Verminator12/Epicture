@@ -216,10 +216,9 @@ public class MainActivity extends AppCompatActivity implements
             public void onResponse(Call<BasicResponse> call, Response<BasicResponse> response) {
                 BasicResponse body = response.body();
                 if (response.isSuccessful() && body != null && body.getSuccess()) {
-                    UserFragment gallery = (UserFragment) getSupportFragmentManager().findFragmentByTag(USER_TAG);
-                    if (gallery != null) {
-                        gallery.refreshList();
-                    }
+                    UserFragment user = (UserFragment) getSupportFragmentManager().findFragmentByTag(USER_TAG);
+                    if (user != null)
+                        user.refreshList();
                 }
             }
 
