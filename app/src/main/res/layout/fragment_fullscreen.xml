@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/FullscreenImage_text"
         android:layout_centerInParent="true"/>
 
     <ProgressBar
@@ -25,7 +26,9 @@
         android:layout_height="50dp"
         android:layout_alignBottom="@id/fullscreen_image"
         android:layout_toStartOf="@id/remove_image"
-        android:backgroundTint="@android:color/holo_orange_dark" />
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/FavoriteImage_text"
+        android:src="@drawable/ic_favorite_white_48dp" />
 
     <ImageButton
         android:id="@+id/remove_image"
@@ -33,6 +36,8 @@
         android:layout_height="50dp"
         android:layout_alignBottom="@id/fullscreen_image"
         android:layout_alignParentEnd="true"
-        android:backgroundTint="@android:color/holo_red_light" />
+        android:backgroundTint="@android:color/transparent"
+        android:contentDescription="@string/RemoveImage_text"
+        android:src="@android:drawable/ic_menu_delete" />
 
 </RelativeLayout>

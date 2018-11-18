@@ -11,7 +11,8 @@
         android:layout_height="wrap_content"
         android:clickable="true"
         android:focusable="true"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        tools:background="@android:color/white" />
 
     <GridView
         android:id="@+id/gallery_grid"
