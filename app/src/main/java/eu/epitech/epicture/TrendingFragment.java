@@ -1,6 +1,7 @@
 package eu.epitech.epicture;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +20,6 @@ import eu.epitech.epicture.model.ImgurImage;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 
 public class TrendingFragment extends Fragment {
     private static final String SORT_OPTION = "top";
@@ -53,6 +53,7 @@ public class TrendingFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         gallery_search = getActivity().findViewById(R.id.gallery_search);
+        gallery_search.setBackgroundColor(Color.WHITE);
         gallery_search.setVisibility(View.VISIBLE);
         gallery_search.setOnClickListener(new View.OnClickListener() {
             @Override

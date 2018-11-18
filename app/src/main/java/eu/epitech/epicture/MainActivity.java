@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 import eu.epitech.epicture.model.BasicResponse;
 import eu.epitech.epicture.model.ImgurImage;

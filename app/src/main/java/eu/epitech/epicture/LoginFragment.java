@@ -16,7 +16,6 @@ import android.webkit.WebView;
 
 public class LoginFragment extends Fragment {
     private WebView loginWebview;
-    private String IMGUR_AUTH_CALLBACK = "https://api.imgur.com/oauth2/authorize";
     private ImgurAppInfo appInfo = new ImgurAppInfo();
     private ImgurTokenListener listener;
 
@@ -65,6 +64,7 @@ public class LoginFragment extends Fragment {
     }
 
     private Uri buildWebviewUrl() {
+        String IMGUR_AUTH_CALLBACK = "https://api.imgur.com/oauth2/authorize";
         Uri.Builder loginUri = Uri.parse(IMGUR_AUTH_CALLBACK).buildUpon();
 
         loginUri.appendQueryParameter("client_id", appInfo.getImgurAppId());
